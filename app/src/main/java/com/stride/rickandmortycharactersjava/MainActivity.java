@@ -21,8 +21,6 @@ import com.stride.rickandmortycharactersjava.feature.character_list.RickAndMorty
 import com.stride.rickandmortycharactersjava.model.RickAndMortyCharacter;
 import com.stride.rickandmortycharactersjava.model.RickAndMortyCharactersResponse;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private RickAndMortyApi api;
