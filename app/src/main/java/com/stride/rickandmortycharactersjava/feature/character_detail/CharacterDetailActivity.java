@@ -16,12 +16,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.stride.rickandmortycharactersjava.R;
 import com.stride.rickandmortycharactersjava.data.api.RickAndMortyApi;
+import com.stride.rickandmortycharactersjava.data.api.RickAndMortyDataSource;
 import com.stride.rickandmortycharactersjava.feature.character_list.RickAndMortyCharacterViewHolder;
 import com.stride.rickandmortycharactersjava.model.RickAndMortyCharacter;
+
+import org.jetbrains.annotations.NotNull;
 
 public class CharacterDetailActivity extends AppCompatActivity {
 
     public static final String CHARACTER_ID = "character_id";
+
+    private final RickAndMortyApi api = RickAndMortyDataSource.INSTANCE.getApi();
 
     private ImageView image;
     private TextView name;
@@ -37,28 +42,17 @@ public class CharacterDetailActivity extends AppCompatActivity {
         long id = getIntent().getLongExtra(CHARACTER_ID, -1);
 
         if (id != -1) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://rickandmortyapi.com/api/")
-                    .client(client)
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .build();
-            RickAndMortyApi api = retrofit.create(RickAndMortyApi.class);
-
             api.getCharacter(id).enqueue(new Callback<RickAndMortyCharacter>() {
                 @Override
-                public void onResponse(Call<RickAndMortyCharacter> call, Response<RickAndMortyCharacter> response) {
+                public void onResponse(@NotNull Call<RickAndMortyCharacter> call, @NotNull Response<RickAndMortyCharacter> response) {
                     if (response.body() != null) {
-                        name.setText(response.body().name);
-                        Glide.with(image).load(response.body().image).into(image);
+                        name.setText(response.body().getName());
+                        Glide.with(image).load(response.body().getImage()).into(image);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<RickAndMortyCharacter> call, Throwable t) {}
+                public void onFailure(@NotNull Call<RickAndMortyCharacter> call, @NotNull Throwable t) {}
             });
         } else {
             finish();
